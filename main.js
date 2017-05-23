@@ -32,6 +32,18 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  mainWindow.minimize()
+
+  setTimeout(() => {
+    console.log('settting bounds')
+    mainWindow.setBounds({
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100
+    })
+  }, 10 * 1000);
 }
 
 // This method will be called when Electron has finished
