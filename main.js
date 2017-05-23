@@ -13,7 +13,15 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 800, height: 600, webPreferences: {
+                nodeIntegration: false,
+                plugins: true,
+                webSecurity: true,
+                allowDisplayingInsecureContent: false,
+                preload: path.join(__dirname, 'preload.js')
+            },
+            frame: false,
+            titleBarStyle: 'hidden-inset'})
 
   // and load the index.html of the app.
   mainWindow.loadURL('http://localhost:3000')
@@ -26,16 +34,30 @@ function createWindow () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
+    // mainWindow = null
   })
+
+mainWindow.on('endsession', function () {
+	console.log('end session');
+})
+
+mainWindow.webContents.on('crashed', (event, killed) => {
+  if (killed) {
+    console.log('process killed');
+  }
+	console.log('window crashed');
+});
 
   electron.ipcMain.on('restart', (event) => {
     console.log('restart')
     app.once('will-quit', () => {
-        app.relaunch();
+      let tempArgs = process.argv.slice(1);
+        app.relaunch({args: tempArgs});
     });
-    app.quit();
-  }) 
+    mainWindow.close();
+  })
+
+  
 }
 
 // This method will be called when Electron has finished

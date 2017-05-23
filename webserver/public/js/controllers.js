@@ -17,10 +17,19 @@ angular.module('myApp.controllers', ['ngCookies']).
 
     $scope.cookiePut = function () {
       let expireDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
-      const ipcRenderer = require('electron').ipcRenderer;
+      $cookies.put('test', 'hello', { expires: expireDate.toUTCString() })
+      $cookies.put('test1', 'hello1', { expires: expireDate.toUTCString() })
+      
+      const ipcRenderer = window.ipcRenderer;
       $cookies.put('stlocale', 'da-dk', { expires: expireDate.toUTCString() });
       ipcRenderer.send('restart');
     }
+
+    setTimeout(() => {
+      
+    mainWindow.focus();
+    console.log(mainWindow.isFocused())
+  }, 3000);
 
   }]).
   controller('MyCtrl1', function ($scope) {
